@@ -117,8 +117,3 @@ export async function deleteUsersByID(userID: string[]) {
         return null;
     }
 }
-
-// (async () => {
-//     //await createUser([{ email: "testing", password: "testing" }])
-//     //await deleteUsersByID(["0af59c6f-c956-4711-a359-8e7ffd6148b7"])
-// })()

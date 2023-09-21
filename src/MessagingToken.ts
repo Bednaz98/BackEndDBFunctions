@@ -67,17 +67,3 @@ export async function getUserToken(userID: string, app: string): Promise<string[
         return null
     }
 }
-
-// (async () => {
-    // const objectData = {
-    //     userID: "36ef6c4c-3f25-4a27-b345-3143cb3959c4",
-    //     deviceID: "t3e4sr34t",
-    //     os: "tes3253t",
-    //     app: "testing",
-    // }
-    //const startToken = v4()
-    //console.log(startToken)
-    //await saveToken(objectData, startToken);
-    // const token = await getUserToken("36ef6c4c-3f25-4a27-b345-3143cb3959c4", 'testing')
-    // console.log(token)
-// })();

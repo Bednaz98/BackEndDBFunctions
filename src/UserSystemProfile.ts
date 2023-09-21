@@ -47,10 +47,3 @@ export async function getUserSystemProfileByID(userID: string[]): Promise<UserSy
     return transform
 }
 
-
-// (async () => {
-//     // @ts-ignore
-//     await updateUserSystemProfiles([{ profileID: "36ef6c4c-3f25-4a27-b345-3143cb3959c4", mobileNumber: "1-(333)-333-3333" }])
-//     const result = await getUserSystemProfileByID(["36ef6c4c-3f25-4a27-b345-3143cb3959c4"])
-//     console.log(result)
-// })()
