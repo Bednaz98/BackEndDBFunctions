@@ -11,8 +11,6 @@
     "prisma"
   ],
   "scripts": {
-    "append-prisma": "ts-node ./scripts/jabPrisma.ts",
-    "postinstall": "npm run append-prisma && prisma generate",
     "test": "jest",
     "lint": "npx eslint . --max-warnings 0",
     "increment": "npm version patch",
