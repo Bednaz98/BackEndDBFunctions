@@ -28,7 +28,7 @@
     "@babel/preset-env": "^7.22.5",
     "@babel/preset-typescript": "^7.22.5",
     "@jest/globals": "^29.5.0",
-    "@types/fs-extra": "^11.0.1",
+    "@types/fs-extra": "^11.0.2",
     "@types/jest": "^29.5.2",
     "@types/node": "^20.4.5",
     "@types/object-hash": "^3.0.2",
