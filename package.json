@@ -17,12 +17,11 @@
     "lint": "npx eslint . --max-warnings 0",
     "increment": "npm version patch",
     "lint-fix": "eslint --fix",
-    "build": "npm run generateSyncFile && tsc -b",
+    "build": "tsc -b",
     "pr-test": "npm run test",
     "test-pack": "npm i && npm run build && npm pack",
     "sync-prisma": "npx prisma migrate dev",
-    "prisma-browser": "npx prisma studio",
-    "generateSyncFile": "ts-node ./script/generateSyncSchema.ts"
+    "prisma-browser": "npx prisma studio"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.22.5",
