@@ -13,9 +13,11 @@ datasource db {
 model User {
   id                    String                 @id @default(uuid())
   email                 String                 @unique
+  userName              String                 @unique
   password              String
   lastPasswordUpdate    BigInt                 @default(0)
   createdAt             BigInt
+  authDevice            Json
   userSystemProfiles    UserSystemProfiles?
   messagingToken        MessagingToken?
   userGlobalPreferences UserGlobalPreferences?
@@ -28,7 +30,7 @@ model UserSystemProfiles {
   lastName      String?
   username      String?
   recoveryEmail String?
-  mobileNumber  String?
+  mobileNumber  Json?
 }
 
 model UserGlobalPreferences {
@@ -41,4 +43,12 @@ model MessagingToken {
   id        User   @relation(fields: [userID], references: [id], onDelete: Cascade)
   userID    String @id
   tokenData Json?
+}
+
+model TwoFactorQue {
+  id              String @id
+  userID          String
+  applicationName String
+  deviceData      Json
+  timeStamp       BigInt
 }

@@ -1,7 +1,6 @@
 import hash from 'object-hash'
 import prisma from "./primsaClient";
 import { encryptText, decryptData } from '@jabz/security-utils';
-import { v4 } from 'uuid';
 import { getEnvVar } from './utilities';
 
 
