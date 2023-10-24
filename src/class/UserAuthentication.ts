@@ -3,10 +3,10 @@ import prisma from "../primsaClient"
 import { PasswordConfig, UsernameConfig, passWordCheck, validateEmail, usernameValidator, NewUser, TwoFactorClientData, NewUserUpdate } from "@jabz/shared-auth"
 import { objectsEqual } from "../utilities"
 import { generateTwoFactorQuery, findTwoFactorQuery, checkTwoFactorCode, removeTwoFactorQuery, addAuthDevice, trimTwoFactorRequest } from "../2Factor"
-import { createSingleUser, verifyPassword, deleteUsersByID, tryUpdateUser } from "../UserFunctions"
+import { createSingleUser, verifyPassword, deleteUsersByID, tryUpdateUser, CreateUserResult } from "../UserFunctions"
 
 export interface AuthenticationClass {
-    createAccount: (newUserData: NewUser, idGenerator?: (newUserData?: NewUser) => string) => Promise<string[] | boolean | undefined>
+    createAccount: (newUserData: NewUser, idGenerator?: (newUserData?: NewUser) => string) => Promise<string[] | CreateUserResult | undefined>
     tryLogin: (username: string, password: string, applicationName: string, deviceDetails: TwoFactorClientData) => Promise<boolean | string | null>
     tryResolveTwoFactor: (userID: string, applicationName: string, deviceDetails: TwoFactorClientData, code: string, timestamp: number) => Promise<boolean>
     getTwoFactorRequestData: (id: string) => Promise<TwoFactorQue | null>
@@ -27,7 +27,7 @@ export class AuthenticationHandler implements AuthenticationClass {
         if (!emailResult.isValid) return emailResult.errorMessage;
         const usernameResult = usernameValidator(newUserData.username, this.usernameConfig);
         if (!usernameResult.isValid) return usernameResult.errorMessage;
-        else return (await createSingleUser(newUserData, idGenerator)).isValid;
+        else return (await createSingleUser(newUserData, idGenerator))
     }
     async tryLogin(username: string, password: string, applicationName: string, deviceDetails: TwoFactorClientData) {
         const isValid = await verifyPassword(username, deviceDetails, password)

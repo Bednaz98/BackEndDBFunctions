@@ -7,7 +7,7 @@ import { createNewAuthDevice } from './2Factor';
 
 const userClient = prisma.user;
 
-interface CreateUserResult extends UserCreationResults {
+export interface CreateUserResult extends UserCreationResults {
     username?: string
     id?: string
 }
