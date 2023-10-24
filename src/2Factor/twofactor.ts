@@ -2,24 +2,8 @@ import hash from "object-hash"
 import prisma from "../primsaClient"
 import { getHashFactor, getTFTimeDevisor } from "./rotaryNumber"
 import { v4 } from "uuid"
+import { TwoFactorClientData, DeviceTwoFactor } from "@jabz/shared-auth"
 
-
-export interface TwoFactorClientData {
-    appName: string
-    appID: string
-    os: string
-    deviceModel: string
-    deviceName: string
-    isTemp?: boolean
-}
-
-export interface DeviceTwoFactor {
-    id: string
-    deviceData: TwoFactorClientData
-    addedData: number
-    expTime?: number
-    primary: boolean
-}
 
 
 export function createNewAuthDevice(deviceInfo: TwoFactorClientData, isPrimaryDevice: boolean): DeviceTwoFactor {

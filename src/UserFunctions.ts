@@ -1,18 +1,13 @@
 import prisma from './primsaClient'
 import { v4 } from 'uuid'
 import { hashData, compareHash } from '@jabz/security-utils';
-import { UserCreationErrors, UserCreationResults, getEnvVar, objectsEqual, passWordCheck, validateEmail } from './utilities';
-import { TwoFactorClientData, createNewAuthDevice } from './2Factor/twofactor';
+import { objectsEqual, getEnvVar } from './utilities';
+import { UserCreationResults, UserCreationErrors, NewUser, NewUserUpdate, TwoFactorClientData } from '@jabz/shared-auth';
+import { createNewAuthDevice } from './2Factor';
 
 const userClient = prisma.user;
 
 
-export interface NewUser {
-    email: string
-    userName: string
-    password: string
-    authDevice: TwoFactorClientData
-}
 
 /**
  * creates a single user
@@ -21,8 +16,8 @@ export async function createSingleUser(newUserData: NewUser, idGenerator?: (newU
     try {
         const check = Object.values(newUserData.authDevice).map((e) => Boolean(e)).every((r) => r)
         if (!check) return { isValid: false, errorMessage: [UserCreationErrors.deviceDataMissing] }
-        const exist = await userClient.findMany({ where: { userName: newUserData.userName } })
-        if (exist.length) return { isValid: false, errorMessage: [UserCreationErrors.userExist] }
+        const exist = await userClient.findMany({ where: { OR: [{ userName: newUserData.userName }, { email: newUserData.email }] } })
+        if (exist.length > 0) return { isValid: false, errorMessage: [UserCreationErrors.userExist] }
         const result = await userClient.create({
             data: {
                 id: idGenerator ? idGenerator(newUserData) : v4(),
@@ -90,11 +85,7 @@ export async function createUsers(newUserData: NewUser[], idGenerator?: (newUser
 }
 
 
-export interface NewUserUpdate {
-    newPassword: string | undefined
-    newEmail: string | undefined
 
-}
 
 export async function tryUpdateUser(userID: string, authDevice: TwoFactorClientData, userOldRawPassword: string, newData: NewUserUpdate) {
 

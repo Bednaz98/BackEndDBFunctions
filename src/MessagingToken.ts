@@ -2,25 +2,12 @@ import hash from 'object-hash'
 import prisma from "./primsaClient";
 import { encryptText, decryptData } from '@jabz/security-utils';
 import { getEnvVar } from './utilities';
+import { TokenIDHashData, CompositeTokenData } from '@jabz/shared-auth';
 
 
 const messageTokenClient = prisma.messagingToken
 
-export interface TokenIDHashData {
-    userID: string
-    app: string
-    deviceID: string
-    os: string
-}
 
-export interface TokenMetaData {
-    app: string
-    token: string | null
-    updateAt: number
-}
-export interface CompositeTokenData {
-    [idHash: string]: TokenMetaData
-}
 export async function saveToken(userData: TokenIDHashData, token: string) {
     try {
         const oldData = (await messageTokenClient
