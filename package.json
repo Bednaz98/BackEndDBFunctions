@@ -11,6 +11,7 @@
     "prisma"
   ],
   "scripts": {
+    "install": "npm run sync-prisma",
     "test": "jest",
     "lint": "npx eslint . --max-warnings 0",
     "increment": "npm version patch",

@@ -1,6 +1,6 @@
 import { TwoFactorQue } from "@prisma/client"
 import prisma from "../primsaClient"
-import { PasswordConfig, UsernameConfig, passWordCheck, validateEmail, userNameValidator, NewUser, TwoFactorClientData, NewUserUpdate } from "@jabz/shared-auth"
+import { PasswordConfig, UsernameConfig, passWordCheck, validateEmail, usernameValidator, NewUser, TwoFactorClientData, NewUserUpdate } from "@jabz/shared-auth"
 import { objectsEqual } from "../utilities"
 import { generateTwoFactorQuery, findTwoFactorQuery, checkTwoFactorCode, removeTwoFactorQuery, addAuthDevice, trimTwoFactorRequest } from "../2Factor"
 import { createSingleUser, verifyPassword, deleteUsersByID, tryUpdateUser } from "../UserFunctions"
@@ -25,7 +25,7 @@ export class AuthenticationHandler implements AuthenticationClass {
         if (!passwordResult.isValid) return passwordResult.errorMessage;
         const emailResult = validateEmail(newUserData.email);
         if (!emailResult.isValid) return emailResult.errorMessage;
-        const usernameResult = userNameValidator(newUserData.userName, this.usernameConfig);
+        const usernameResult = usernameValidator(newUserData.username, this.usernameConfig);
         if (!usernameResult.isValid) return usernameResult.errorMessage;
         else return (await createSingleUser(newUserData, idGenerator)).isValid;
     }

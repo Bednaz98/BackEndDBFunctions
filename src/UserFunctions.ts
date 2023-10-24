@@ -7,28 +7,33 @@ import { createNewAuthDevice } from './2Factor';
 
 const userClient = prisma.user;
 
-
+interface CreateUserResult extends UserCreationResults {
+    username?: string
+    id?: string
+}
 
 /**
  * creates a single user
 */
-export async function createSingleUser(newUserData: NewUser, idGenerator?: (newUserData?: NewUser) => string): Promise<UserCreationResults> {
+export async function createSingleUser(newUserData: NewUser, idGenerator?: (newUserData?: NewUser) => string): Promise<CreateUserResult> {
     try {
         const check = Object.values(newUserData.authDevice).map((e) => Boolean(e)).every((r) => r)
         if (!check) return { isValid: false, errorMessage: [UserCreationErrors.deviceDataMissing] }
-        const exist = await userClient.findMany({ where: { OR: [{ userName: newUserData.userName }, { email: newUserData.email }] } })
+        const exist = await userClient.findMany({ where: { OR: [{ username: newUserData.username }, { email: newUserData.email }] } })
         if (exist.length > 0) return { isValid: false, errorMessage: [UserCreationErrors.userExist] }
         const result = await userClient.create({
             data: {
                 id: idGenerator ? idGenerator(newUserData) : v4(),
                 email: newUserData.email,
-                userName: newUserData.userName,
+                username: newUserData.username,
                 password: await hashData(newUserData.password, 0),
                 createdAt: Date.now(),
                 lastPasswordUpdate: BigInt(Date.now()),
                 authDevice: [JSON.stringify(createNewAuthDevice(newUserData.authDevice, true))],
             }
         })
+        result.username
+        result.id
         return { isValid: Boolean(result) };
     } catch (error) {
         console.error(error);
@@ -40,7 +45,7 @@ export async function createSingleUser(newUserData: NewUser, idGenerator?: (newU
 export async function verifyPassword(userID: string, authDevice: TwoFactorClientData, password: string) {
     try {
         const user = await userClient.findFirst({
-            where: { OR: [{ id: userID }, { email: userID }, { userName: userID }] },
+            where: { OR: [{ id: userID }, { email: userID }, { username: userID }] },
             select: {
                 id: false,
                 email: false,
@@ -69,7 +74,7 @@ export async function createUsers(newUserData: NewUser[], idGenerator?: (newUser
         const newUser = validUsers.map(async (e) => ({
             id: idGenerator ? idGenerator(e) : v4(),
             email: e.email,
-            userName: e.userName,
+            username: e.username,
             password: await hashData(e.password, getEnvVar()),
             createdAt: Date.now(),
             authDevice: JSON.stringify(e.authDevice),
@@ -93,7 +98,7 @@ export async function tryUpdateUser(userID: string, authDevice: TwoFactorClientD
         const found = await verifyPassword(userID, authDevice, userOldRawPassword)
         if (found) {
             const result = await userClient.updateMany({
-                where: { OR: [{ id: userID }, { email: userID }, { userName: userID }] },
+                where: { OR: [{ id: userID }, { email: userID }, { username: userID }] },
                 data: {
                     email: newData.newEmail,
                     password: newData.newPassword,
@@ -113,7 +118,7 @@ export async function tryUpdateUser(userID: string, authDevice: TwoFactorClientD
 export async function findUser(userID: string[]) {
     try {
         return await userClient.findMany({
-            where: { OR: [{ id: { in: userID } }, { email: { in: userID } }, { userName: { in: userID } }] },
+            where: { OR: [{ id: { in: userID } }, { email: { in: userID } }, { username: { in: userID } }] },
             select: { id: true, email: true, createdAt: true }
         })
     } catch (error) {
@@ -126,7 +131,7 @@ export async function findUser(userID: string[]) {
 /** delete users by ID*/
 export async function deleteUsersByID(userID: string[]) {
     try {
-        const result = await userClient.deleteMany({ where: { OR: [{ id: { in: userID } }, { email: { in: userID } }, { userName: { in: userID } }] } })
+        const result = await userClient.deleteMany({ where: { OR: [{ id: { in: userID } }, { email: { in: userID } }, { username: { in: userID } }] } })
         return Boolean(result.count)
     } catch (error) {
         return null;

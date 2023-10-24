@@ -1,7 +1,7 @@
 model User {
   id                    String                 @id @default(uuid())
   email                 String                 @unique
-  userName              String                 @unique
+  username              String                 @unique
   password              String
   lastPasswordUpdate    BigInt                 @default(0)
   createdAt             BigInt
